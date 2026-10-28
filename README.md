@@ -7,6 +7,8 @@
 > 按你的情况选：
 > - **开机能看到 GRUB 菜单** → 方法一：单用户模式，最快，不用任何 U 盘；
 > - **看不到 GRUB（直接进系统）** → 方法二：U 盘应急盘，和虚拟机那套原理一样。
+>
+> 🔗 **相关仓库**：如果你的机器是 **VMware 虚拟机**，请看 [vmware-root-reset](https://github.com/DaisySG297/vmware-root-reset)。
 
 ---
 
