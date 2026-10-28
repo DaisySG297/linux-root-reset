@@ -1,11 +1,12 @@
-# 实体机（真物理机）Linux 忘密码？两种方法重置 root
+# 实体机（真物理机）Linux 忘密码？三种方法重置 root
 
 > 适用于：装在**真实电脑/物理机/裸机**上的 Linux（Ubuntu / Debian / CentOS / Rocky 等都行），不是虚拟机。
 >
 > 和虚拟机的区别：实体机没有 `.vmx` 文件，也没 vmrun/VNC 那套自动化，要手动操作；但好处是**通常能看到 GRUB 菜单**，反而有一条更快的捷径。
 >
 > 按你的情况选：
-> - **开机能看到 GRUB 菜单** → 方法一：单用户模式，最快，不用任何 U 盘；
+> - **还能正常登录** → 方法零：一条 `sudo passwd root` 直接开 root，最快；
+> - **开机能看到 GRUB 菜单** → 方法一：单用户模式，不用任何 U 盘；
 > - **看不到 GRUB（直接进系统）** → 方法二：U 盘应急盘，和虚拟机那套原理一样。
 >
 > 🔗 **相关仓库**：如果你的机器是 **VMware 虚拟机**，请看 [vmware-root-reset](https://github.com/DaisySG297/vmware-root-reset)。
@@ -27,7 +28,43 @@
 
 ---
 
-## 方法一：单用户模式（能看到 GRUB 时，最快）
+## 方法零：还能登录时，直接开 root（最快）
+
+如果你**还能用某个普通用户正常登录**（知道密码、能 sudo），根本不用重启、不用 U 盘，一条命令就开好 root：
+
+```bash
+sudo passwd root
+```
+
+它先让你输入当前用户的 sudo 密码，再让你给 root 设一个新密码（输两遍）。这一条命令**同时完成「解锁 + 设密码」**。
+
+### 配套
+
+**只是想要 root 权限，不一定要真开 root 账号** —— 日常 `sudo -i` 就能临时切到 root，用完退出，更安全：
+
+```bash
+sudo -i      # 进入 root shell
+exit         # 退回普通用户
+```
+
+**root 账号压根不存在（极少数）** —— 如果 `sudo passwd root` 报「用户不存在」，先补建：
+
+```bash
+sudo useradd -m -s /bin/bash root
+sudo passwd root
+```
+
+**想让 root 能 SSH 登录** —— 改完密码 SSH 往往还是登不上（Ubuntu 默认禁止 root 密码 SSH），见文末「改完密码，SSH 可能还是登不上」。
+
+**反向：锁定 root（关闭密码登录）**
+
+```bash
+sudo passwd -l root
+```
+
+---
+
+## 方法一：单用户模式（能看到 GRUB 时，不用 U 盘）
 
 > 原理：让内核以 `init=/bin/bash` 或 single 模式启动，直接进一个 root shell，跳过登录，改密码。全程不用 U 盘。
 
