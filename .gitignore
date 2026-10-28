@@ -1,0 +1,6 @@
+# 临时文件
+*.tmp
+*.log
+__pycache__/
+*.pyc
+.DS_Store
